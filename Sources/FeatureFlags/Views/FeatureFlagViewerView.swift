@@ -114,7 +114,9 @@ private struct FlagRow: View {
                     }
                 }
             }
+            #if os(macOS)
             .toggleStyle(.checkbox)
+            #endif
 
             Spacer()
 
