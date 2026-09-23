@@ -7,6 +7,7 @@ let package = Package(
     platforms: [
         .iOS(.v17),
         .macOS(.v14),
+        .tvOS(.v17),
     ],
     products: [
         .library(name: "AppLogger", targets: ["AppLogger"]),
