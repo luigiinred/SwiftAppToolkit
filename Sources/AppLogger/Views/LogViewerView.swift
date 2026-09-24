@@ -72,6 +72,8 @@ public struct LogViewerView: View {
     public var body: some View {
         #if os(macOS)
         macOSBody
+        #elseif os(tvOS)
+        tvOSBody
         #else
         iOSBody
         #endif
@@ -171,6 +173,27 @@ public struct LogViewerView: View {
                     } label: {
                         Label("More", systemImage: "ellipsis.circle")
                     }
+                }
+            }
+        }
+    }
+    #endif
+
+    #if os(tvOS)
+    // No pasteboard on tvOS, so the viewer is read-only with a Clear action.
+    private var tvOSBody: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                filterBar
+                logList
+                statusBar
+            }
+            .navigationTitle("Logs")
+            .toolbar {
+                Button(role: .destructive) {
+                    logStore.clear()
+                } label: {
+                    Label("Clear All", systemImage: "trash")
                 }
             }
         }
@@ -322,7 +345,7 @@ public struct LogViewerView: View {
         #if os(macOS)
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
-        #else
+        #elseif os(iOS) || os(visionOS)
         UIPasteboard.general.string = text
         #endif
 
@@ -382,7 +405,9 @@ private struct LogEntryRow: View {
             Text(entry.message)
                 .foregroundStyle(.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                #if !os(tvOS)
                 .textSelection(.enabled)
+                #endif
         }
     }
 
@@ -405,7 +430,9 @@ private struct LogEntryRow: View {
             Text(entry.message)
                 .foregroundStyle(.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                #if !os(tvOS)
                 .textSelection(.enabled)
+                #endif
                 .font(.system(.caption, design: .monospaced))
         }
     }

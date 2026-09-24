@@ -62,7 +62,11 @@ public struct FeatureFlagViewerView: View {
                 }
             }
         }
+        #if os(tvOS)
+        .searchable(text: $searchText, prompt: "Search")
+        #else
         .searchable(text: $searchText, placement: .toolbar, prompt: "Search")
+        #endif
         .overlay {
             if !searchText.isEmpty && groupedFlags.isEmpty {
                 ContentUnavailableView.search(text: searchText)
